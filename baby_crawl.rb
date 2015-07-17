@@ -1,22 +1,38 @@
+require 'rubygems'
 require 'nokogiri'
 require 'open-uri'
+require 'anemone'
 
 url = 'http://www.poetryfoundation.org/'
-page = Nokogiri::HTML(open(url))
 
-def process_links (page)
-  links = []
-  raw_links = page.css('a')
-  raw_links.each do |link|
-    if link['href'][0] == "/"
-      link = 'http://www.poetryfoundation.org' + link['href']
-      links << link
-    end
+Anemone.crawl(url) do |anemone|
+  count = 0
+  anemone.focus_crawl do |page|
+    page.links.select {|link| link.to_s.include? 'poetryfoundation'}
   end
-  return links
+  anemone.on_every_page do |page|
+    count += 1
+    puts count
+  end
 end
 
-puts process_links(page)
+
+
+# page = Nokogiri::HTML(open(url))
+# $links = []
+
+# def process_links (page)
+#   raw_links = page.css('a')
+#   raw_links.each do |link|
+#     if link['href'][0] == "/"
+#       link = 'http://www.poetryfoundation.org' + link['href']
+#       $links << link
+#     end
+#   end
+# end
+
+# process_links page
+# puts $links
 
 # url = 'http://www.poetryfoundation.org/poem/250560'
 # poem = page.css('#poem div.poem').css('div')
