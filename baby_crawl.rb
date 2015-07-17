@@ -11,8 +11,16 @@ Anemone.crawl(url) do |anemone|
     page.links.select {|link| link.to_s.include? 'poetryfoundation'}
   end
   anemone.on_every_page do |page|
-    count += 1
-    puts count
+    if page.doc && page.doc.css('#poem div.poem') && page.doc.css('#poem div.poem').css('div')
+      poem = page.doc.css('#poem div.poem').css('div')
+      poem.each do |line|
+        if line.text.include? 'tree'
+          puts line.text
+          count += 1
+          puts count
+        end
+      end
+    end
   end
 end
 
