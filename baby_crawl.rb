@@ -8,16 +8,14 @@ url = 'http://www.poetryfoundation.org/'
 Anemone.crawl(url) do |anemone|
   count = 0
   anemone.focus_crawl do |page|
-    page.links.select {|link| link.to_s.include? 'poetryfoundation'}
+    page.links.select {|link| link.to_s.include?('poetryfoundation')}
   end
   anemone.on_every_page do |page|
-    if page.doc && page.doc.css('#poem div.poem') && page.doc.css('#poem div.poem').css('div')
+    if page.doc && page.doc.css('#poem div.poem') && page.doc.css('#poem div.poem').css('div') && !page.url.to_s.include?('poetrymagazine')
       poem = page.doc.css('#poem div.poem').css('div')
       poem.each do |line|
-        if line.text.include? 'tree'
+        if line.text.length < 100 && (line.text.include? 'fail')
           puts line.text
-          count += 1
-          puts count
         end
       end
     end
